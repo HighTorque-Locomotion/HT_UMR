@@ -1,0 +1,76 @@
+{
+  "extends": "../humanoid_retarget_defaults.json",
+  "robot": {
+    "name": "piplus_s_40v",
+    "xml": "../../../Assets/ht_urdf-main/ht_urdf/PiPlus_S_12L8A0G2H0W_LSE_ZedMini_40V_260908/xml/PiPlus_S_12L8A0G2H0W_LSE_ZedMini_40V_260908.xml",
+    "point_cloud_center": "body:torso_link",
+    "tpose_qpos": {
+      "r_shoulder_pitch_joint": 0.0,
+      "r_shoulder_roll_joint": -1.57079632679,
+      "r_upper_arm_joint": 0.0,
+      "r_elbow_joint": 0.0,
+      "l_shoulder_pitch_joint": 0.0,
+      "l_shoulder_roll_joint": 1.57079632679,
+      "l_upper_arm_joint": 0.0,
+      "l_elbow_joint": 0.0,
+      "head_yaw_joint": 0.0,
+      "head_pitch_joint": 0.0,
+      "r_hip_pitch_joint": 0.0,
+      "r_hip_roll_joint": 0.0,
+      "r_thigh_joint": 0.0,
+      "r_calf_joint": 0.0,
+      "r_ankle_pitch_joint": 0.0,
+      "r_ankle_roll_joint": 0.0,
+      "l_hip_pitch_joint": 0.0,
+      "l_hip_roll_joint": 0.0,
+      "l_thigh_joint": 0.0,
+      "l_calf_joint": 0.0,
+      "l_ankle_pitch_joint": 0.0,
+      "l_ankle_roll_joint": 0.0
+    },
+    "joint_limits": {
+      "r_shoulder_pitch_joint": [-4.18, 1.04],
+      "r_shoulder_roll_joint": [-3.092, 0.091],
+      "r_upper_arm_joint": [-2.16, 2.16],
+      "r_elbow_joint": [-1.745, 1.745],
+      "l_shoulder_pitch_joint": [-4.18, 1.04],
+      "l_shoulder_roll_joint": [-0.091, 3.092],
+      "l_upper_arm_joint": [-2.16, 2.16],
+      "l_elbow_joint": [-1.745, 1.745],
+      "head_yaw_joint": [-1.57, 1.57],
+      "head_pitch_joint": [-0.7, 0.7],
+      "r_calf_joint": [0.0, 2.35],
+      "l_calf_joint": [0.0, 2.35]
+    }
+  },
+  "correspondence": {
+    "dataset": {
+      "out": "../output/demo_piplus_s_40v/correspondence_dataset.npz",
+      "num_points": 1024,
+      "surface_oversample_ratio": 2,
+      "smpl_center": "bbox_ratio",
+      "bbox_center_ratio": 0.5340569989535866
+    },
+    "train": {
+      "out_dir": "../output/demo_piplus_s_40v/correspondence_slots",
+      "epochs": 20,
+      "batch_size": 2,
+      "log_every": 5,
+      "save_every": 20,
+      "device": "cuda"
+    }
+  },
+  "motion": {
+    "data": "../sample_data/lafan1_smplx",
+    "seq_key": "dance1_subject2",
+    "max_frames": 60
+  },
+  "retarget": {
+    "smplx_device": "cuda",
+    "smplx_batch_size": 60,
+    "smplx_batch_size_max": 60
+  },
+  "view": {
+    "enabled": false
+  }
+}

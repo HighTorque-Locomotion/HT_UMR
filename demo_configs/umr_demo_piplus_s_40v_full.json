@@ -1,0 +1,10 @@
+{
+  "extends": "umr_demo_piplus_s_40v.json",
+  "motion": {
+    "seq_key": "dance1_subject2",
+    "max_frames": 0
+  },
+  "view": {
+    "enabled": false
+  }
+}

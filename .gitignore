@@ -27,6 +27,10 @@ node_modules/
 smpl/*.pkl
 smpl/*.npz
 smpl/*.zip
+smpl/smplx/
+
+# Locally generated/converted motion samples
+sample_data/lafan1_smplx/aiming1_subject1.npz
 
 # User-downloaded or locally converted third-party datasets/assets
 sample_data/bones-seed/motions_uniform/

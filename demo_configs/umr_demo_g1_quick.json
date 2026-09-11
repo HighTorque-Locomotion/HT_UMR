@@ -1,0 +1,42 @@
+{
+  "extends": "../humanoid_retarget_defaults.json",
+  "robot": {
+    "name": "unitree_g1_demo",
+    "xml": "../assets/g1/g1_29dof.xml",
+    "point_cloud_center": "body:waist_yaw_link",
+    "tpose_qpos": {
+      "left_shoulder_roll_joint": 1.57079632679,
+      "left_elbow_joint": 1.57079632679,
+      "right_shoulder_roll_joint": -1.57079632679,
+      "right_elbow_joint": 1.57079632679
+    }
+  },
+  "correspondence": {
+    "dataset": {
+      "out": "../output/demo_g1/correspondence_dataset.npz",
+      "num_points": 1024,
+      "surface_oversample_ratio": 2
+    },
+    "train": {
+      "out_dir": "../output/demo_g1/correspondence_slots",
+      "epochs": 20,
+      "batch_size": 2,
+      "log_every": 5,
+      "save_every": 20,
+      "device": "cuda"
+    }
+  },
+  "motion": {
+    "data": "../sample_data/lafan1_smplx",
+    "seq_key": "dance1_subject2",
+    "max_frames": 60
+  },
+  "retarget": {
+    "smplx_device": "cuda",
+    "smplx_batch_size": 60,
+    "smplx_batch_size_max": 60
+  },
+  "view": {
+    "enabled": false
+  }
+}

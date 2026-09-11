@@ -1,0 +1,11 @@
+{
+  "extends": "umr_demo_piplus_s_40v_full.json",
+  "motion": {
+    "seq_key": "aiming1_subject1",
+    "max_frames": 0
+  },
+  "retarget": {
+    "out": "../output/piplus_s_40v_retarget/aiming1_subject1_smplx_piplus_s_40v.npz"
+  },
+  "view": {"enabled": false}
+}
