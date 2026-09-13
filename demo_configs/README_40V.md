@@ -2,6 +2,8 @@
 
 For the root cause, diagnostic evidence, and checks required when adapting a new
 XML, see [新 XML 适配避坑与验收清单](../docs/new_xml_surface_binding_checklist_zh.md).
+For ready-to-run collision commands and foot-specific checks, see
+[自碰撞开启与足部避碰速查](../docs/self_collision_quickstart_zh.md).
 
 All `piplus_s_40v` demo configurations now inherit the corrected surface binding
 from `umr_demo_piplus_s_40v.json`. The ordinary and full-length entry points no

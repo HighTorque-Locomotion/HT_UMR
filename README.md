@@ -115,6 +115,9 @@ Before adapting another robot XML, read the
 [40V arm-binding failure analysis and new-XML checklist (中文)](docs/new_xml_surface_binding_checklist_zh.md).
 Shape correspondence alone does not guarantee correct kinematic body ownership.
 
+For copy-paste collision settings, full-motion commands, and foot collision
+checks, see [自碰撞开启与足部避碰速查 (中文)](docs/self_collision_quickstart_zh.md).
+
 Retarget the included LAFAN1-derived SMPL-X motion:
 
 ```bash
