@@ -106,6 +106,11 @@ SMPL-X weights are not distributed.
 
 ## Quick Start
 
+For the local PiPlus 40V adaptation, the corrected arm surface binding is now
+enabled by default in all 40V demo configs. See
+[`demo_configs/README_40V.md`](demo_configs/README_40V.md) for full-motion commands,
+the separate strong self-collision profile, and validation instructions.
+
 Retarget the included LAFAN1-derived SMPL-X motion:
 
 ```bash

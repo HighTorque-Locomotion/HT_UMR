@@ -1,0 +1,10 @@
+{
+  "extends": "umr_dance1_40v_semantic_arms.json",
+  "motion": {
+    "seq_key": "aiming1_subject1",
+    "max_frames": 0
+  },
+  "retarget": {
+    "out": "../output/umr_four_panel/aiming1_subject1_40v_fixed.npz"
+  }
+}

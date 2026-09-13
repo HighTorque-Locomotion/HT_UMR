@@ -4,6 +4,14 @@
     "name": "piplus_s_40v",
     "xml": "../../../Assets/ht_urdf-main/ht_urdf/PiPlus_S_12L8A0G2H0W_LSE_ZedMini_40V_260908/xml/PiPlus_S_12L8A0G2H0W_LSE_ZedMini_40V_260908.xml",
     "point_cloud_center": "body:torso_link",
+    "surface_slot_body_bindings": {
+      "leftArm": ["l_upper_arm_link"],
+      "rightArm": ["r_upper_arm_link"],
+      "leftForeArm": ["l_elbow_link"],
+      "rightForeArm": ["r_elbow_link"],
+      "leftHand": ["l_wrist_link"],
+      "rightHand": ["r_wrist_link"]
+    },
     "tpose_qpos": {
       "r_shoulder_pitch_joint": 0.0,
       "r_shoulder_roll_joint": -1.57079632679,
@@ -66,11 +74,16 @@
     "max_frames": 60
   },
   "retarget": {
+    "out": "../output/piplus_s_40v_fixed_retarget/dance1_subject2_smplx_piplus_s_40v.npz",
     "smplx_device": "cuda",
     "smplx_batch_size": 60,
     "smplx_batch_size_max": 60
   },
   "view": {
     "enabled": false
+  },
+  "solver": {
+    "iters": 3,
+    "pose_init_iters": 60
   }
 }

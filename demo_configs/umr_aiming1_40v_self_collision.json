@@ -1,0 +1,10 @@
+{
+  "extends": "umr_aiming1_piplus_s_40v.json",
+  "solver": {
+    "robot_self_penetration_hard_constraint": true,
+    "robot_self_penetration_margin": 0.0,
+    "robot_self_penetration_hard_slack": true,
+    "robot_self_penetration_hard_slack_cost": 1000.0
+  },
+  "retarget": {"out": "../output/piplus_s_40v_fixed_retarget/aiming1_subject1_40v_fixed_self_collision.npz"}
+}

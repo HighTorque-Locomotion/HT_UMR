@@ -1,0 +1,16 @@
+{
+  "extends": "umr_demo_piplus_s_40v_full.json",
+  "solver": {
+    "collision_threshold": 0.1,
+    "robot_self_penetration_cost": 10000.0,
+    "robot_self_penetration_tolerance": 0.003,
+    "robot_self_penetration_hard_constraint": true,
+    "robot_self_penetration_margin": 0.002,
+    "robot_self_penetration_hard_slack": true,
+    "robot_self_penetration_hard_slack_cost": 1000000.0,
+    "trajectory_filter_mode": "off"
+  },
+  "retarget": {
+    "out": "../output/dance1_40v_fixed_self_collision/dance1_subject2_40v_fixed_strong_self_collision.npz"
+  }
+}

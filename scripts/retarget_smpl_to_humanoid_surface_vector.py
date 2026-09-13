@@ -661,6 +661,7 @@ def bind_robot_slots(
     project_to_surface=True,
     source_model_type=None,
     template_cfg=None,
+    source_slot_part_ids=None,
 ):
     config = args.config_data
     robot = robot_config(config)
@@ -688,8 +689,58 @@ def bind_robot_slots(
     points_root = smpl_frame_to_robot_root(robot_slot_points_smpl, matrix)
     binding = common.bind_points_to_mesh(points_root, vertices, faces, nearest_vertex_k=nearest_vertex_k)
     bound_geom_ids = face_geom_ids[binding["face_ids"]]
-    points_root_bound = binding["closest_points"] if project_to_surface else points_root
-    normals_world = binding["closest_normals"] @ center_rot.T
+    points_root_bound = (binding["closest_points"] if project_to_surface else points_root).copy()
+    normals_root_bound = binding["closest_normals"].copy()
+    body_bindings = robot.get("surface_slot_body_bindings", {}) or {}
+    binding_audit = []
+    if body_bindings:
+        if not isinstance(body_bindings, dict):
+            raise ValueError("robot.surface_slot_body_bindings must map source segment names to body names")
+        if not project_to_surface:
+            raise ValueError("surface_slot_body_bindings requires project_robot_slots=true")
+        if source_slot_part_ids is None:
+            raise ValueError("surface_slot_body_bindings requires source semantic part labels")
+        part_ids = np.asarray(source_slot_part_ids, dtype=np.int32).reshape(-1)
+        if len(part_ids) != len(points_root):
+            raise ValueError("Source part labels and robot slots must have the same length")
+        # An opt-in semantic restriction: a spatially close mesh upstream of an
+        # articulation cannot observe that articulation's motion. Reproject onto
+        # the specified bodies' real surfaces and rebuild their surface normals.
+        for segment_name, names in body_bindings.items():
+            if segment_name not in SMPLX_PART_IDS:
+                raise ValueError(f"Unknown surface-binding source segment: {segment_name!r}")
+            names = [names] if isinstance(names, str) else names
+            if not isinstance(names, (list, tuple)) or not names or not all(isinstance(n, str) for n in names):
+                raise ValueError(f"Invalid surface-binding body list for {segment_name!r}: {names!r}")
+            body_ids = [mujoco.mj_name2id(model, mujoco.mjtObj.mjOBJ_BODY, n) for n in names]
+            if any(b < 0 for b in body_ids):
+                raise ValueError(f"Unknown robot body in surface binding {segment_name!r}: {names!r}")
+            allowed_geoms = geom_ids[np.isin(model.geom_bodyid[geom_ids], body_ids)]
+            if not len(allowed_geoms):
+                raise ValueError(f"No visual surface geoms for {segment_name!r}: {names!r}")
+            ids = np.flatnonzero(part_ids == SMPLX_PART_IDS[segment_name])
+            if not len(ids):
+                continue
+            part_vertices, part_faces, part_face_geoms, *_ = collect_root_mesh(
+                model, ref_data, allowed_geoms, point_cloud_center,
+            )
+            part_binding = common.bind_points_to_mesh(
+                points_root[ids], part_vertices, part_faces, nearest_vertex_k=nearest_vertex_k,
+            )
+            new_geom_ids = part_face_geoms[part_binding["face_ids"]]
+            changed = int(np.count_nonzero(bound_geom_ids[ids] != new_geom_ids))
+            displacement = np.linalg.norm(part_binding["closest_points"] - points_root_bound[ids], axis=1)
+            bound_geom_ids[ids] = new_geom_ids
+            points_root_bound[ids] = part_binding["closest_points"]
+            normals_root_bound[ids] = part_binding["closest_normals"]
+            audit = {
+                "segment": segment_name, "bodies": list(names), "slots": int(len(ids)),
+                "changed_geom_count": changed, "mean_projection_change_m": float(displacement.mean()),
+                "max_projection_change_m": float(displacement.max()),
+            }
+            binding_audit.append(audit)
+            print(f"[HumanoidRetarget][SemanticBinding] {json.dumps(audit)}")
+    normals_world = normals_root_bound @ center_rot.T
     points_world = points_root_bound @ center_rot.T + center_pos
     local_pos = np.empty_like(points_root_bound, dtype=np.float32)
     local_normals = np.empty_like(points_root_bound, dtype=np.float32)
@@ -708,6 +759,7 @@ def bind_robot_slots(
         "local_pos": local_pos.astype(np.float32),
         "local_normals": local_normals.astype(np.float32),
         "root_points": points_root_bound.astype(np.float32),
+        "semantic_binding_audit": binding_audit,
     }
 
 
@@ -2513,6 +2565,7 @@ def main():
         project_to_surface=bool(args.project_robot_slots),
         source_model_type=source_model_type,
         template_cfg=template_cfg,
+        source_slot_part_ids=source_slot_part_ids,
     )
     if use_composite_racket_contact:
         candidate_racket_ids = np.asarray(composite_racket_state["racket_slot_ids"], dtype=np.int32)
@@ -2820,6 +2873,9 @@ def main():
         "ground_z": np.asarray([ground_z], dtype=np.float32),
         "zero_source_finger_pose": np.asarray([bool(args.zero_source_finger_pose)]),
     }
+    if robot_template.get("semantic_binding_audit"):
+        output_payload["semantic_binding_audit_json"] = np.asarray(json.dumps(robot_template["semantic_binding_audit"]))
+        output_payload["retarget_config_json"] = np.asarray(json.dumps(args.config_data))
     np.savez_compressed(args.out, **output_payload)
     print(
         f"[HumanoidRetarget] saved {args.out} qpos={qpos_seq.shape} "

@@ -1,11 +1,11 @@
 {
   "extends": "umr_demo_piplus_s_40v_full.json",
   "motion": {
-    "seq_key": "aiming1_subject1",
+    "seq_key": "dance1_subject2",
     "max_frames": 0
   },
   "retarget": {
-    "out": "../output/piplus_s_40v_fixed_retarget/aiming1_subject1_smplx_piplus_s_40v.npz"
+    "out": "../output/dance1_five_panel/corrected_umr/dance1_subject2_umr_40v_semantic_arms.npz"
   },
   "view": {"enabled": false}
 }

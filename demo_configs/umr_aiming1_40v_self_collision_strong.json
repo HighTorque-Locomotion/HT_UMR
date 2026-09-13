@@ -1,0 +1,8 @@
+{
+  "extends": "umr_demo_piplus_s_40v_self_collision_strong.json",
+  "motion": {
+    "seq_key": "aiming1_subject1",
+    "max_frames": 0
+  },
+  "retarget": {"out": "../output/piplus_s_40v_fixed_retarget/aiming1_subject1_40v_fixed_strong_self_collision.npz"}
+}

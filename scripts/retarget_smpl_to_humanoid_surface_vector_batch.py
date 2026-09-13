@@ -632,9 +632,20 @@ def bind_robot_slots(
     project_to_surface=True,
     source_model_type=None,
     template_cfg=None,
+    source_slot_part_ids=None,
 ):
     config = args.config_data
     robot = robot_config(config)
+    if robot.get("surface_slot_body_bindings"):
+        # Keep the alternate batch entry point on the same corrected binding.
+        import retarget_smpl_to_humanoid_surface_vector as shared
+        shared.load_body_segment_module(config)
+        return shared.bind_robot_slots(
+            model, args, robot_slot_points_smpl,
+            nearest_vertex_k=nearest_vertex_k, project_to_surface=project_to_surface,
+            source_model_type=source_model_type, template_cfg=template_cfg,
+            source_slot_part_ids=source_slot_part_ids,
+        )
     sample_pose = robot_sample_pose_for_source(config, source_model_type, template_cfg)
     sample_qpos = robot_sample_qpos_for_pose(config, sample_pose)
     ref_data = mujoco.MjData(model)
@@ -1847,6 +1858,7 @@ def main(argv=None):
         project_to_surface=bool(args.project_robot_slots),
         source_model_type=source_model_type,
         template_cfg=template_cfg,
+        source_slot_part_ids=source_slot_part_ids,
     )
     robot = robot_config(args.config_data)
     robot_sample_pose = robot_sample_pose_for_source(args.config_data, source_model_type, template_cfg)
