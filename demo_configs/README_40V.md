@@ -1,5 +1,8 @@
 # PiPlus 40V defaults
 
+For the root cause, diagnostic evidence, and checks required when adapting a new
+XML, see [新 XML 适配避坑与验收清单](../docs/new_xml_surface_binding_checklist_zh.md).
+
 All `piplus_s_40v` demo configurations now inherit the corrected surface binding
 from `umr_demo_piplus_s_40v.json`. The ordinary and full-length entry points no
 longer use the old arm binding. Other robot configurations are unchanged.

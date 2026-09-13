@@ -111,6 +111,10 @@ enabled by default in all 40V demo configs. See
 [`demo_configs/README_40V.md`](demo_configs/README_40V.md) for full-motion commands,
 the separate strong self-collision profile, and validation instructions.
 
+Before adapting another robot XML, read the
+[40V arm-binding failure analysis and new-XML checklist (中文)](docs/new_xml_surface_binding_checklist_zh.md).
+Shape correspondence alone does not guarantee correct kinematic body ownership.
+
 Retarget the included LAFAN1-derived SMPL-X motion:
 
 ```bash
