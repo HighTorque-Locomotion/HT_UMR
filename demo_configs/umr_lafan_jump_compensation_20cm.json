@@ -1,0 +1,8 @@
+{
+  "extends": "umr_lafan_jump_compensation.json",
+  "retarget": {
+    "foot_clearance": {
+      "min_travel_height": 0.2
+    }
+  }
+}

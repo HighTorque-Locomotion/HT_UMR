@@ -1,0 +1,10 @@
+{
+  "extends": "umr_lafan_jump_compensation.json",
+  "retarget": {
+    "bvh_rest_calibration": {
+      "enabled": true,
+      "lateral_positions": true,
+      "segments": ["leftUpLeg", "rightUpLeg", "leftLeg", "rightLeg", "leftFoot", "rightFoot"]
+    }
+  }
+}

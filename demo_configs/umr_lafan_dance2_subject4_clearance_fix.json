@@ -1,0 +1,11 @@
+{
+  "extends": "umr_lafan_dance_foot_clearance.json",
+  "motion": {
+    "data": "../output/lafan_dance_foot_clearance/smplx/dance2_subject4.npz",
+    "seq_key": "dance2_subject4",
+    "max_frames": 0
+  },
+  "retarget": {
+    "out": "../output/dance2_subject4_clearance_fix/dance2_subject4_clearance_fix.npz"
+  }
+}

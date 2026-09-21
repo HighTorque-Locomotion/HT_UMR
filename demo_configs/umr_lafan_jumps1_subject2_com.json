@@ -1,0 +1,11 @@
+{
+  "extends": "umr_lafan_jump_compensation.json",
+  "motion": {
+    "data": "../output/lafan/smplx/jumps1_subject2.npz",
+    "seq_key": "jumps1_subject2",
+    "max_frames": 0
+  },
+  "retarget": {
+    "out": "../output/lafan_jump_compensation/jumps1_subject2_com.npz"
+  }
+}

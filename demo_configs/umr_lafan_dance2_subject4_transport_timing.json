@@ -1,0 +1,11 @@
+{
+  "extends": "umr_lafan_dance_transport_timing.json",
+  "motion": {
+    "data": "../output/lafan_dance_foot_clearance/smplx/dance2_subject4.npz",
+    "seq_key": "dance2_subject4",
+    "max_frames": 0
+  },
+  "retarget": {
+    "out": "../output/dance2_subject4_transport_timing/dance2_subject4_transport_timing.npz"
+  }
+}

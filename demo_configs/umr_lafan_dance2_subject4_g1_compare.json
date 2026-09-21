@@ -1,0 +1,44 @@
+{
+  "extends": [
+    "../humanoid_retarget_defaults.json",
+    "../robot_configs/humanoid_retarget_unitree_g1_example.json"
+  ],
+  "smplx_model_dir": "../smpl",
+  "robot": {
+    "xml_policy": {
+      "add_freejoint_root": false
+    }
+  },
+  "correspondence": {
+    "dataset": {
+      "out": "../output/dance2_subject4_compare/g1/correspondence_dataset.npz",
+      "smpl_models": [
+        {
+          "type": "smplx",
+          "dir": "../smpl",
+          "genders": [
+            "neutral"
+          ]
+        }
+      ]
+    },
+    "train": {
+      "out_dir": "../output/dance2_subject4_compare/g1/correspondence_slots",
+      "device": "cpu"
+    }
+  },
+  "motion": {
+    "data": "../output/lafan_dance_foot_clearance/smplx/dance2_subject4.npz",
+    "seq_key": "dance2_subject4",
+    "max_frames": 0
+  },
+  "retarget": {
+    "out": "../output/dance2_subject4_compare/g1/dance2_subject4_g1_original.npz",
+    "smplx_device": "cpu",
+    "smplx_batch_size": 60,
+    "smplx_batch_size_max": 60
+  },
+  "view": {
+    "enabled": false
+  }
+}

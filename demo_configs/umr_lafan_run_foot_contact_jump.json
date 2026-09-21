@@ -1,0 +1,36 @@
+{
+  "extends": "umr_lafan_run_foot_contact.json",
+  "retarget": {
+    "out": "../output/lafan_run_foot_contact_jump/run_foot_contact_jump.npz",
+    "foot_clearance": {
+      "min_travel_height": 0.0,
+      "min_peak_height": 0.0
+    },
+    "jump_compensation": {
+      "enabled": true,
+      "gravity": 9.81,
+      "contact_height": 0.02,
+      "contact_speed": 0.30,
+      "release_height": 0.006,
+      "air_height": 0.018,
+      "min_flight_time": 0.10,
+      "max_flight_time": 0.80,
+      "support_window": 0.16,
+      "support_sync_time": 0.067,
+      "min_hip_rise": 0.025,
+      "min_hip_height": 0.45,
+      "min_leap_rise": 0.12,
+      "min_confidence": 0.80,
+      "prepare_time": 0.16,
+      "settle_time": 0.20,
+      "max_extra_height": 0.20,
+      "max_com_rise": 0.30,
+      "min_com_height": 0.20,
+      "com_height_cost": 500000.0,
+      "com_velocity_cost": 200.0,
+      "support_xy_cost": 50000.0,
+      "support_height_tolerance": 0.001,
+      "support_slack_cost": 0.0
+    }
+  }
+}

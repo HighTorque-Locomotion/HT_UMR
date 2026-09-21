@@ -1,0 +1,9 @@
+{
+  "extends": "umr_lafan_dance2_subject4_clearance_fix.json",
+  "retarget": {
+    "out": "../output/dance2_subject4_clearance_5cm/dance2_subject4_clearance_5cm.npz",
+    "foot_clearance": {
+      "min_travel_height": 0.05
+    }
+  }
+}

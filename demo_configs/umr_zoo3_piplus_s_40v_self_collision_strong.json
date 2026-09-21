@@ -1,0 +1,37 @@
+{
+  "extends": "umr_demo_piplus_s_40v_self_collision_strong.json",
+  "smplx_model_dir": "../smpl",
+  "robot": {
+    "xml": "~/ht_urdf/ht_urdf/PiPlus_S_12L8A0G2H0W_LSE_ZedMini_40V_260908/xml/PiPlus_S_12L8A0G2H0W_LSE_ZedMini_40V_260908_limit.xml",
+    "dof_max_dq_box": {
+      "r_shoulder_pitch_joint": 0.03,
+      "r_shoulder_roll_joint": 0.03,
+      "r_upper_arm_joint": 0.03,
+      "l_shoulder_pitch_joint": 0.03,
+      "l_shoulder_roll_joint": 0.03,
+      "l_upper_arm_joint": 0.03
+    }
+  },
+  "correspondence": {
+    "dataset": {
+      "smpl_models": [
+        {"type": "smplx", "dir": "../smpl", "genders": ["neutral"]}
+      ]
+    },
+    "train": {"device": "auto"}
+  },
+  "motion": {
+    "data": "../output/zoo3_smplx/zoo_3.npz",
+    "seq_key": "zoo_3",
+    "max_frames": 0
+  },
+  "solver": {
+    "smooth_cost": 4.0,
+    "temporal_smooth_cost": 8.0
+  },
+  "retarget": {
+    "out": "../output/zoo3_40v_self_collision/zoo_3_40v_strong_self_collision_v1.npz",
+    "smplx_device": "auto",
+    "source_ground_align": "global_foot_joint"
+  }
+}
