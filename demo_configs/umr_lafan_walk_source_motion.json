@@ -1,0 +1,12 @@
+{
+  "extends": "umr_lafan_run_foot_contact.json",
+  "retarget": {
+    "out": "../output/lafan_walk_source_motion/walk_source_motion.npz",
+    "foot_clearance": {
+      "min_travel_height": 0.0,
+      "min_peak_height": 0.0,
+      "stance_flat_cost": 0.0,
+      "transport_timing": {"enabled": false}
+    }
+  }
+}

@@ -1,0 +1,6 @@
+{
+  "format": "umr_smplx_model_v1",
+  "gender": "neutral",
+  "base_model_dir": "../SMPLX_NEUTRAL.pkl",
+  "num_betas": 16
+}

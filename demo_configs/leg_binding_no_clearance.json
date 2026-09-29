@@ -1,0 +1,9 @@
+{
+  "extends": "leg_binding_trial.json",
+  "retarget": {
+    "foot_clearance": {
+      "enabled": false
+    },
+    "out": "/data/HT_UMR/output/piplus_lafan_walk_betas16_legbind_no_clearance_260926/retarget/walk1_subject1_260926_PiPlus_S_12L8A0G2H0W_LSE_ZedMini_40V_260908_umr_betas16_legbind_no_clearance.npz"
+  }
+}

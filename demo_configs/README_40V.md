@@ -165,3 +165,19 @@ OMP_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2 MKL_NUM_THREADS=2 \
     --cpu-threads 2
 
 ```
+
+# 使用新绑定的点
+``` 
+python -u scripts/retarget_lafan_betas16_batch.py \
+  --source-root /data/GMR/assets/lafan \
+  --pattern 'fall*.bvh' \
+  --config output/piplus_lafan_walk_betas16_clearance15_260926/debug_leg_angles/leg_binding_no_clearance.json \
+  --slots output/piplus_walk1_betas16_legacy/correspondence_slots/correspondence_slots_final.npz \
+  --converter-python miniconda3/envs/gmr/bin/python \
+  --output-root output/piplus_lafan_fall_betas16_legbind_no_clearance_260926 \
+  --output-name-template '{name}_{date}_{robot}_umr_betas16_legbind_no_clearance' \
+  --output-date 260926 \
+  --workers 4 \
+  --cpu-threads 2
+
+  ```

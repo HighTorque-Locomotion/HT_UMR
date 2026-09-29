@@ -1,0 +1,17 @@
+{
+  "extends": "walk1_subject1.json",
+  "robot": {
+    "surface_slot_body_bindings": {
+      "leftUpLeg": ["l_thigh_link"],
+      "rightUpLeg": ["r_thigh_link"],
+      "leftLeg": ["l_calf_link"],
+      "rightLeg": ["r_calf_link"],
+      "leftFoot": ["l_ankle_roll_link"],
+      "rightFoot": ["r_ankle_roll_link"]
+    }
+  },
+  "retarget": {
+    "out": "/data/HT_UMR/output/piplus_lafan_walk_betas16_clearance15_260926/debug_leg_angles/walk1_semantic_binding_full.npz"
+  },
+  "view": {"enabled": false}
+}

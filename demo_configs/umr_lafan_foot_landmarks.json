@@ -1,0 +1,26 @@
+{
+  "extends": "umr_lafan_run_foot_contact_jump.json",
+  "robot": {
+    "foot_landmarks": {
+      "left": {
+        "ankle_body": "l_ankle_pitch_link",
+        "ankle_local_pos": [0.0, 0.0, 0.0],
+        "toe_body": "l_ankle_roll_link",
+        "toe_local_pos": [0.05, 0.0, -0.05]
+      },
+      "right": {
+        "ankle_body": "r_ankle_pitch_link",
+        "ankle_local_pos": [0.0, 0.0, 0.0],
+        "toe_body": "r_ankle_roll_link",
+        "toe_local_pos": [0.05, 0.0, -0.05]
+      }
+    }
+  },
+  "retarget": {
+    "out": "../output/lafan_foot_landmarks/foot_landmarks.npz",
+    "foot_landmarks": {
+      "enabled": true,
+      "direction_cost": 1000.0
+    }
+  }
+}

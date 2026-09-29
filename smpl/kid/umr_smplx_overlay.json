@@ -1,0 +1,7 @@
+{
+  "format": "umr_smplx_kid_v1",
+  "gender": "neutral",
+  "base_model_dir": "../SMPLX_NEUTRAL.pkl",
+  "kid_template_path": "../../smplx_kid_template.npy",
+  "kid_weight": 1.0
+}

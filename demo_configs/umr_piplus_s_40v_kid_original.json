@@ -1,0 +1,66 @@
+{
+  "extends": "../humanoid_retarget_defaults.json",
+  "smplx_model_dir": "smpl/kid",
+  "smpl_template": {
+    "source": "manual",
+    "type": "smplx",
+    "use_betas": false,
+    "gender": "neutral",
+    "name": "smplx_neutral_kid_1"
+  },
+  "robot": {
+    "name": "piplus_s_40v",
+    "xml": "~/ht_urdf/ht_urdf/PiPlus_S_12L8A0G2H0W_LSE_ZedMini_40V_260908/xml/PiPlus_S_12L8A0G2H0W_LSE_ZedMini_40V_260908.xml",
+    "point_cloud_center": "body:torso_link",
+    "tpose_qpos": {
+      "r_shoulder_pitch_joint": 0.0,
+      "r_shoulder_roll_joint": -1.57079632679,
+      "r_upper_arm_joint": 0.0,
+      "r_elbow_joint": 0.0,
+      "l_shoulder_pitch_joint": 0.0,
+      "l_shoulder_roll_joint": 1.57079632679,
+      "l_upper_arm_joint": 0.0,
+      "l_elbow_joint": 0.0,
+      "head_yaw_joint": 0.0,
+      "head_pitch_joint": 0.0,
+      "r_hip_pitch_joint": 0.0,
+      "r_hip_roll_joint": 0.0,
+      "r_thigh_joint": 0.0,
+      "r_calf_joint": 0.0,
+      "r_ankle_pitch_joint": 0.0,
+      "r_ankle_roll_joint": 0.0,
+      "l_hip_pitch_joint": 0.0,
+      "l_hip_roll_joint": 0.0,
+      "l_thigh_joint": 0.0,
+      "l_calf_joint": 0.0,
+      "l_ankle_pitch_joint": 0.0,
+      "l_ankle_roll_joint": 0.0
+    },
+    "xml_policy": {
+      "add_freejoint_root": false
+    }
+  },
+  "correspondence": {
+    "dataset": {
+      "smpl_models": [
+        {
+          "type": "smplx",
+          "dir": "smpl/kid",
+          "genders": [
+            "neutral"
+          ],
+          "name": "smplx_neutral_kid_1"
+        }
+      ]
+    }
+  },
+  "retarget": {
+    "smplx_device": "auto",
+    "smplx_batch_size": 128,
+    "smplx_batch_size_max": 128,
+    "source_ground_align": "global_foot_joint"
+  },
+  "view": {
+    "enabled": false
+  }
+}
