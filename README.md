@@ -129,26 +129,47 @@ SMPL-X weights are not distributed.
 ### 1. 环境和人体输入
 
 先按上面的 Installation 安装 UMR 依赖。另行准备已授权的 BONES-SEED **SOMA uniform BVH**、
-`soma_assets`、SOMA USD 骨架及 SMPL-X 模型目录。人体模型、原始动作和已训练的对应关系权重
-不随此分支发布。以下命令均在仓库根目录、已激活的 UMR 环境中运行。
+`soma_assets`、SOMA USD 骨架及 SMPL-X 模型目录。统一体型参数
+[`soma_base_fit_mhr_params.npz`](sample_data/bones-seed/shapes/soma_uniform_fit_mhr_params/soma_base_fit_mhr_params.npz)
+已包含；完整人体模型、原始动作和已训练的对应关系权重仍需另行准备。以下命令均在仓库根目录、已激活的 UMR 环境中运行。
 
 ```bash
 git clone --branch feat/piplus-local-region-umr \
   https://github.com/HighTorque-Locomotion/HT_UMR.git
 cd HT_UMR
+BONES_ROOT=/path/to/bones_seed
+mkdir -p "$BONES_ROOT/shapes/soma_uniform_fit_mhr_params"
+cp -n sample_data/bones-seed/shapes/soma_uniform_fit_mhr_params/soma_base_fit_mhr_params.npz \
+  "$BONES_ROOT/shapes/soma_uniform_fit_mhr_params/"
 export OMP_NUM_THREADS=1
 export OPENBLAS_NUM_THREADS=1
 export MUJOCO_GL=egl
-export UMR_SOMA_ASSETS_PATH=/path/to/soma_assets
+export UMR_SOMA_ASSETS_PATH="$BONES_ROOT/soma_assets"
 export UMR_SOMA_SMPLX_ASSETS_PATH="$UMR_SOMA_ASSETS_PATH"
 
 python scripts/local_regions/configure.py \
-  --bvh /path/to/soma_uniform/bvh/230509/shadow_boxing_R_001__A359.bvh \
+  --bvh "$BONES_ROOT/motions_uniform/bvh/230509/shadow_boxing_R_001__A359.bvh" \
   --soma-assets "$UMR_SOMA_ASSETS_PATH" \
-  --soma-usd /path/to/shapes/soma_base_rig/soma_base_skel_minimal.usd \
+  --soma-usd "$BONES_ROOT/shapes/soma_base_rig/soma_base_skel_minimal.usd" \
   --smpl-models /path/to/smpl \
   --out output/piplus22/boxing
 ```
+
+人体数据目录应为以下结构。原始压缩包解压后的 `soma_uniform` 目录需在工作副本中改名为
+`motions_uniform`；当前上游依据此目录名识别 uniform 模板。不要仅用指向 `soma_uniform`
+的软链接代替改名，因为配置脚本会解析真实路径。
+
+```text
+bones_seed/
+  motions_uniform/bvh/<日期>/<动作>.bvh
+  shapes/soma_uniform_fit_mhr_params/soma_base_fit_mhr_params.npz
+  shapes/soma_base_rig/soma_base_skel_minimal.usd
+  soma_assets/SOMA_neutral.npz
+  soma_assets/…
+```
+
+这份约 1.9 KB 的 NPZ 是 uniform 体型拟合参数，不是完整 SOMA 模型，不适用于 proportional
+演员专属体型。它沿用 BONES-SEED 原数据的许可与访问条件。
 
 配置脚本默认选择仓库自带的 22DOF MJCF；`--robot-xml` 仅用于显式覆盖。替换 `/path/to/` 为本机路径。
 首次可额外传 `--max-frames 12` 做短片段检查；默认 0 处理整个动作。输出配置为

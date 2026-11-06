@@ -31,7 +31,10 @@ smpl/*.zip
 # User-downloaded or locally converted third-party datasets/assets
 sample_data/bones-seed/motions_uniform/
 sample_data/bones-seed/motions_proportional/
-sample_data/bones-seed/shapes/
+sample_data/bones-seed/shapes/*
+!sample_data/bones-seed/shapes/soma_uniform_fit_mhr_params/
+sample_data/bones-seed/shapes/soma_uniform_fit_mhr_params/*
+!sample_data/bones-seed/shapes/soma_uniform_fit_mhr_params/soma_base_fit_mhr_params.npz
 sample_data/bones-seed/soma_assets/
 sample_data/omomo/train_and_test/
 sample_data/omomo/train/

@@ -40,13 +40,18 @@
 
 依赖沿用根目录安装说明；需要可用的 MuJoCo、trimesh proximity 依赖、SOMA、人体模型及 CUDA
 环境。本次未修改依赖版本。机器人 MJCF 和全部 27 个网格已包含在 `assets/piplus_40v_0908/`，配置脚本默认使用它。
-分支不新增 BONES-SEED 原始数据、SMPL/SOMA 人体资产、训练权重、派生点云 NPZ 或动作结果。
+分支另附 `sample_data/bones-seed/shapes/soma_uniform_fit_mhr_params/soma_base_fit_mhr_params.npz`
+这一 uniform 体型拟合参数文件。完整人体模型、原始动作、训练权重及动作结果仍为外部输入。
 外部输入与自带资产分别为：
 
 - 自带 PiPlus 40V 260908 22DOF MJCF 与相对路径 mesh 目录，visual geom 在 group 1；
-- SOMA uniform BVH、`soma_assets`、对应的 SOMA USD 骨架；
+- SOMA uniform BVH（放在 `motions_uniform/bvh/`）、`soma_assets`、对应的 SOMA USD 骨架；
 - 已授权的人体模型目录；
 - 可选：当前生产版本训练完成的 `correspondence_slots_final.npz` 与配套 `mapping.npz/json`。
+
+uniform 参数放到人体数据根目录下的 `shapes/soma_uniform_fit_mhr_params/`，并确保同一根目录有
+`soma_assets/`。完整目录示例和复制命令见 [README](../README.md#piplus-22dof)。当前上游通过
+`motions_uniform` 目录名识别 uniform 模板；原包内的 `soma_uniform` 目录需在工作副本中改名。
 
 ## 从外部资产生成配置
 
@@ -61,7 +66,7 @@ export UMR_SOMA_ASSETS_PATH=/path/to/soma_assets
 export UMR_SOMA_SMPLX_ASSETS_PATH="$UMR_SOMA_ASSETS_PATH"
 
 python scripts/local_regions/configure.py \
-  --bvh /path/to/motions_uniform/bvh/example.bvh \
+  --bvh /path/to/bones_seed/motions_uniform/bvh/230509/shadow_boxing_R_001__A359.bvh \
   --soma-assets "$UMR_SOMA_ASSETS_PATH" \
   --soma-usd /path/to/shapes/soma_base_rig/soma_base_skel_minimal.usd \
   --smpl-models /path/to/smpl \
