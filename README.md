@@ -111,6 +111,12 @@ The GRAIL example applies its bundled G1-SMPL-X template and pose-corrective
 overlay to the user-provided neutral SMPL-X model at runtime; the derived baked
 SMPL-X weights are not distributed.
 
+## PiPlus local-region adapter
+
+This branch packages the production PiPlus 40V 0908 anatomical-region adapter for
+BONES-SEED SOMA uniform motions. See the [Chinese setup and validation guide](docs/local_region_umr_zh.md).
+Licensed datasets, models, robot meshes and learned correspondence artifacts remain external inputs.
+
 ## Quick Start
 
 Retarget the included LAFAN1-derived SMPL-X motion:

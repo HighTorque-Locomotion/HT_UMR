@@ -1,0 +1,129 @@
+{
+  "robot": {
+    "name": "piplus_s_40v",
+    "point_cloud_center": "body:torso_link",
+    "tpose_qpos": {
+      "r_shoulder_pitch_joint": 0.0,
+      "r_shoulder_roll_joint": -1.57079632679,
+      "r_upper_arm_joint": 0.0,
+      "r_elbow_joint": 0.0,
+      "l_shoulder_pitch_joint": 0.0,
+      "l_shoulder_roll_joint": 1.57079632679,
+      "l_upper_arm_joint": 0.0,
+      "l_elbow_joint": 0.0,
+      "head_yaw_joint": 0.0,
+      "head_pitch_joint": 0.0,
+      "r_hip_pitch_joint": 0.0,
+      "r_hip_roll_joint": 0.0,
+      "r_thigh_joint": 0.0,
+      "r_calf_joint": 0.0,
+      "r_ankle_pitch_joint": 0.0,
+      "r_ankle_roll_joint": 0.0,
+      "l_hip_pitch_joint": 0.0,
+      "l_hip_roll_joint": 0.0,
+      "l_thigh_joint": 0.0,
+      "l_calf_joint": 0.0,
+      "l_ankle_pitch_joint": 0.0,
+      "l_ankle_roll_joint": 0.0
+    },
+    "joint_limits": {
+      "r_shoulder_pitch_joint": [
+        -4.18,
+        1.04
+      ],
+      "r_shoulder_roll_joint": [
+        -3.092,
+        0.091
+      ],
+      "r_upper_arm_joint": [
+        -2.16,
+        2.16
+      ],
+      "r_elbow_joint": [
+        -1.745,
+        0
+      ],
+      "l_shoulder_pitch_joint": [
+        -4.18,
+        1.04
+      ],
+      "l_shoulder_roll_joint": [
+        -0.091,
+        3.092
+      ],
+      "l_upper_arm_joint": [
+        -2.16,
+        2.16
+      ],
+      "l_elbow_joint": [
+        -1.745,
+        0
+      ],
+      "head_yaw_joint": [
+        -1.57,
+        1.57
+      ],
+      "head_pitch_joint": [
+        -0.7,
+        0.7
+      ],
+      "r_calf_joint": [
+        0,
+        2.18
+      ],
+      "l_calf_joint": [
+        0,
+        2.182
+      ]
+    },
+    "height": 0.7072588205337524,
+    "dof_max_dq_box": {
+      "l_shoulder_pitch_joint": 0.03,
+      "l_shoulder_roll_joint": 0.03,
+      "l_upper_arm_joint": 0.03,
+      "r_shoulder_pitch_joint": 0.03,
+      "r_shoulder_roll_joint": 0.03,
+      "r_upper_arm_joint": 0.03
+    }
+  },
+  "correspondence": {
+    "dataset": {
+      "num_points": 4096,
+      "surface_oversample_ratio": 8,
+      "smpl_center": "bbox_ratio",
+      "bbox_center_ratio": 0.5313313610623125,
+      "seed": 0
+    },
+    "train": {
+      "epochs": 500,
+      "batch_size": 2,
+      "log_every": 50,
+      "save_every": 500,
+      "device": "cuda"
+    }
+  },
+  "motion": {
+    "max_frames": 0
+  },
+  "retarget": {
+    "smplx_device": "cuda",
+    "smplx_batch_size": 60,
+    "smplx_batch_size_max": 60
+  },
+  "view": {
+    "enabled": false
+  },
+  "solver": {
+    "iters": 3,
+    "pose_init_iters": 60,
+    "robot_self_penetration_hard_constraint": true,
+    "robot_self_penetration_hard_slack": false,
+    "body_segment": {
+      "schema": "smplx_55_to_19_upper_arm_v1"
+    },
+    "smooth_cost": 4.0,
+    "temporal_smooth_cost": 8.0,
+    "ground_penetration_hard_constraint_mode": "mujoco_collision",
+    "ground_penetration_margin": 0.006
+  }
+}
