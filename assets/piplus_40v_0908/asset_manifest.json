@@ -1,0 +1,170 @@
+{
+  "model": "PiPlus_S_12L8A0G2H0W_LSE_ZedMini_40V_260908",
+  "source_asset_folder": "PiPlus_S_12L8A0G2H0W_LSE_ZedMini_40V_260908",
+  "source_mjcf_sha256": "0c43c37ada2e3a1ff2deb5a28895a940e22d73b7a6aae784d1c161308c023265",
+  "packaged_mjcf": "piplus_40v_260908_no_hyperextension.xml",
+  "packaging_change": "compiler meshdir changed to relative meshes; XML whitespace normalized; model parameters and mesh bytes preserved",
+  "scalar_joint_count": 22,
+  "scalar_joint_names": [
+    "r_shoulder_pitch_joint",
+    "r_shoulder_roll_joint",
+    "r_upper_arm_joint",
+    "r_elbow_joint",
+    "l_shoulder_pitch_joint",
+    "l_shoulder_roll_joint",
+    "l_upper_arm_joint",
+    "l_elbow_joint",
+    "head_yaw_joint",
+    "head_pitch_joint",
+    "r_hip_pitch_joint",
+    "r_hip_roll_joint",
+    "r_thigh_joint",
+    "r_calf_joint",
+    "r_ankle_pitch_joint",
+    "r_ankle_roll_joint",
+    "l_hip_pitch_joint",
+    "l_hip_roll_joint",
+    "l_thigh_joint",
+    "l_calf_joint",
+    "l_ankle_pitch_joint",
+    "l_ankle_roll_joint"
+  ],
+  "mesh_count": 27,
+  "meshes": [
+    {
+      "path": "meshes/base_link.STL",
+      "size_bytes": 5629084,
+      "sha256": "9b2e0c7e702d79659694af5e0706bbfc0dd509a2313d27891410eca37949f234"
+    },
+    {
+      "path": "meshes/torso_link.STL",
+      "size_bytes": 5687234,
+      "sha256": "6dbd4b086234d5bf208e2cedbf0ea872b09204c7b0918dbc7dd0a5e3974af52d"
+    },
+    {
+      "path": "meshes/r_shoulder_pitch_link.STL",
+      "size_bytes": 1145984,
+      "sha256": "80bcceb825da00d823c057861e0a9ee13ee79677bbe2dbffb3e0313563bd91b2"
+    },
+    {
+      "path": "meshes/r_shoulder_roll_link.STL",
+      "size_bytes": 2997484,
+      "sha256": "33861454b9c04a2dcd64c584f100ffe04587acdaf174b45a7e33e401b6dfecab"
+    },
+    {
+      "path": "meshes/r_upper_arm_link.STL",
+      "size_bytes": 2881184,
+      "sha256": "0ae3b9ef3017ecc4a8f7d4bb42e3863b3527b44369ce97a4b1f5387eb4b9b9c2"
+    },
+    {
+      "path": "meshes/r_elbow_link.STL",
+      "size_bytes": 2551584,
+      "sha256": "31e8c9ec4e01b86a01e6fb991006c8761bb28f2909e3ded2d37cf0d1fa336eb1"
+    },
+    {
+      "path": "meshes/r_wrist_link.STL",
+      "size_bytes": 951484,
+      "sha256": "d25bb5b88b2573c28aaa89c28883ae7185fcbb69d99e3a1a12ef95f8f0fce83f"
+    },
+    {
+      "path": "meshes/l_shoulder_pitch_link.STL",
+      "size_bytes": 1145084,
+      "sha256": "bda9df253f0238588afec74f07e0c8bd5b0256792abe59535dbf1c91a3f99232"
+    },
+    {
+      "path": "meshes/l_shoulder_roll_link.STL",
+      "size_bytes": 2996484,
+      "sha256": "4f8fe12dc2c85738433f55f7a06e10bb975344d092a73528c47a1cd3ec6b2b49"
+    },
+    {
+      "path": "meshes/l_upper_arm_link.STL",
+      "size_bytes": 2882284,
+      "sha256": "484e91d0435610134937b85c8d960d0bbab7489e5a928981bebe5a3804b0908f"
+    },
+    {
+      "path": "meshes/l_elbow_link.STL",
+      "size_bytes": 2561384,
+      "sha256": "373506e05723ea071aa76ca61dc3bebdbb1a8107dad15ce9a1850ba54a29c889"
+    },
+    {
+      "path": "meshes/l_wrist_link.STL",
+      "size_bytes": 951484,
+      "sha256": "8ecd35f729e1328c1c4fc4291d3268925d9c38ab5b06d617701b494ae52c8b2e"
+    },
+    {
+      "path": "meshes/head_yaw_link.STL",
+      "size_bytes": 2530384,
+      "sha256": "4ee560d981fad3767102d66d03485057c62eaa7c95d9b20a57ec29b8f9936a94"
+    },
+    {
+      "path": "meshes/head_pitch_link.STL",
+      "size_bytes": 3664384,
+      "sha256": "8a2057e1376f2c76a83ecdc5416ebcc8c4e94c0c3c7d689fc237f28ef4215dcd"
+    },
+    {
+      "path": "meshes/camera_link.STL",
+      "size_bytes": 70684,
+      "sha256": "7e4412d4a4f087e1d12ba774b0dcfbc6945166bf4a0709c263b246ea594e34a0"
+    },
+    {
+      "path": "meshes/r_hip_pitch_link.STL",
+      "size_bytes": 2811584,
+      "sha256": "727ae1193d7cd8cd1ec5f02353d83f4d7472ccb4039c61ee6a2392b8b1dace06"
+    },
+    {
+      "path": "meshes/r_hip_roll_link.STL",
+      "size_bytes": 2815684,
+      "sha256": "dcf45ba3f2438ba77653e6824dcb031d17887fe28ab907cca72b0d4f764f1d80"
+    },
+    {
+      "path": "meshes/r_thigh_link.STL",
+      "size_bytes": 2086784,
+      "sha256": "68f7320f4b690d49d2d3b46f0a71aa53c967bfe2d1aa20cded15ffb28300ad50"
+    },
+    {
+      "path": "meshes/r_calf_link.STL",
+      "size_bytes": 5319884,
+      "sha256": "fb06a7e507ce545473bdeeb2d5abdd878ce32a48467366c901a16fe8e9832506"
+    },
+    {
+      "path": "meshes/r_ankle_pitch_link.STL",
+      "size_bytes": 1272884,
+      "sha256": "480fe56af099c6a018f0ce9892a623fa3e628b77fd2c203ba75a442ec095df8f"
+    },
+    {
+      "path": "meshes/r_ankle_roll_link.STL",
+      "size_bytes": 2820684,
+      "sha256": "f9ed8e4374163fc6afe9e367474154e83196fe6636302d60903d2c706a6f4dad"
+    },
+    {
+      "path": "meshes/l_hip_pitch_link.STL",
+      "size_bytes": 2813984,
+      "sha256": "140cecbedb2113aa2e276e02ba8ff91f8f1022a1db228768c3748cb27cf472d3"
+    },
+    {
+      "path": "meshes/l_hip_roll_link.STL",
+      "size_bytes": 2815684,
+      "sha256": "cbffb0a237e346b0fa2ca7d5ebfa80d8b2fa6d379b81d60177cb32a6a67f19ca"
+    },
+    {
+      "path": "meshes/l_thigh_link.STL",
+      "size_bytes": 2088084,
+      "sha256": "19dd5fcdd60752021fcadd1f7b52dc0549c881398b566052fa79983b314e65f8"
+    },
+    {
+      "path": "meshes/l_calf_link.STL",
+      "size_bytes": 5321184,
+      "sha256": "f477edf303280decdd2bf18e30166f355f195d70cc1e66b9f7eda82e5c4a3778"
+    },
+    {
+      "path": "meshes/l_ankle_pitch_link.STL",
+      "size_bytes": 1272884,
+      "sha256": "d7fbcad0de071857ddcfd142e81b59a560fa0e62636aafe15e61f03d13cbb32b"
+    },
+    {
+      "path": "meshes/l_ankle_roll_link.STL",
+      "size_bytes": 2820684,
+      "sha256": "ee4d41c4d6047d5a040702d643028f3d833111d47fe82484a7836325139e3531"
+    }
+  ]
+}

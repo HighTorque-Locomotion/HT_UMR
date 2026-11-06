@@ -1,3 +1,5 @@
+> **PiPlus 22DOF / 40V 0908：** 本分支包含匹配的机器人资产和局部分界重定向方法。[直接查看使用步骤](#piplus-22dof)。
+
 <h1 align="center">
   Unified Motion Retargeting for Humanoids with Learned Point Cloud Correspondence
 </h1>
@@ -111,11 +113,97 @@ The GRAIL example applies its bundled G1-SMPL-X template and pose-corrective
 overlay to the user-provided neutral SMPL-X model at runtime; the derived baked
 SMPL-X weights are not distributed.
 
-## PiPlus local-region adapter
+<a id="piplus-22dof"></a>
 
-This branch packages the production PiPlus 40V 0908 anatomical-region adapter for
-BONES-SEED SOMA uniform motions. See the [Chinese setup and validation guide](docs/local_region_umr_zh.md).
-Licensed datasets, models, robot meshes and learned correspondence artifacts remain external inputs.
+## PiPlus 22DOF：40V 0908 局部分界重定向
+
+**本分支重点支持我们使用的 PiPlus 40V 0908 22 自由度机器人**：腿部 12、手臂 8、头部 2，
+无腰部和夹爪自由度。MJCF 含浮动基座，因此输出 `qpos` 为 29 维（基座 7 + 关节 22），
+不是 29 个机器人关节。模型不是仓库中另一个 `PiPlusPro` 版本。
+
+完整机器人资产已随分支提交：
+[`assets/piplus_40v_0908/`](assets/piplus_40v_0908/) 包含生产 MJCF、27 个 STL 网格和资产校验清单。
+网格使用相对路径，克隆后无需原工作站的 Assets 文件夹。膝盖防反屈限位已写入 XML，
+局部分界、手臂每步变化限制和平滑参数保存在 `robot_configs/local_regions/`。
+
+### 1. 环境和人体输入
+
+先按上面的 Installation 安装 UMR 依赖。另行准备已授权的 BONES-SEED **SOMA uniform BVH**、
+`soma_assets`、SOMA USD 骨架及 SMPL-X 模型目录。人体模型、原始动作和已训练的对应关系权重
+不随此分支发布。以下命令均在仓库根目录、已激活的 UMR 环境中运行。
+
+```bash
+git clone --branch feat/piplus-local-region-umr \
+  https://github.com/HighTorque-Locomotion/HT_UMR.git
+cd HT_UMR
+export OMP_NUM_THREADS=1
+export OPENBLAS_NUM_THREADS=1
+export MUJOCO_GL=egl
+export UMR_SOMA_ASSETS_PATH=/path/to/soma_assets
+export UMR_SOMA_SMPLX_ASSETS_PATH="$UMR_SOMA_ASSETS_PATH"
+
+python scripts/local_regions/configure.py \
+  --bvh /path/to/soma_uniform/bvh/230509/shadow_boxing_R_001__A359.bvh \
+  --soma-assets "$UMR_SOMA_ASSETS_PATH" \
+  --soma-usd /path/to/shapes/soma_base_rig/soma_base_skel_minimal.usd \
+  --smpl-models /path/to/smpl \
+  --out output/piplus22/boxing
+```
+
+配置脚本默认选择仓库自带的 22DOF MJCF；`--robot-xml` 仅用于显式覆盖。替换 `/path/to/` 为本机路径。
+首次可额外传 `--max-frames 12` 做短片段检查；默认 0 处理整个动作。输出配置为
+`output/piplus22/boxing/config.json`，已有配置不会覆盖。
+
+### 2. 用本机器人采样 4096 点并训练对应关系
+
+```bash
+python scripts/humanoid_retarget_pipeline.py \
+  --config output/piplus22/boxing/config.json --stage build
+python scripts/humanoid_retarget_pipeline.py \
+  --config output/piplus22/boxing/config.json --stage train
+SLOTS=output/piplus22/boxing/correspondence_slots/correspondence_slots_final.npz
+```
+
+模板设置为 4096 点、500 epochs、CUDA。若已有**本 22DOF 模型与同一 SOMA uniform 模板**的生产
+训练产物，可跳过上述两步，改为 `SLOTS=/path/to/correspondence_slots_final.npz`。
+不能使用 PiPlusPro/G1 或其他机器人训练的 slots。
+
+### 3. 捕获映射并加入局部分界
+
+```bash
+python scripts/local_regions/capture.py \
+  --config output/piplus22/boxing/config.json \
+  --slots "$SLOTS" --out output/piplus22/captured
+python scripts/local_regions/prepare.py \
+  --mapping output/piplus22/captured/mapping.npz \
+  --mapping-report output/piplus22/captured/mapping.json \
+  --slots "$SLOTS" --out output/piplus22/prepared
+```
+
+这一步将学习后的覆盖点限制到匹配的机器人解剖区域，生产标定涉及 14 个区域、2411/4096 个点。
+它是本分支加入的推理阶段适配，使用官方 UMR 求解器。
+
+### 4. 重定向并查看结果
+
+```bash
+python scripts/local_regions/retarget.py \
+  --config output/piplus22/boxing/config.json \
+  --prepared output/piplus22/prepared \
+  --audit-dir output/piplus22/boxing/audit \
+  --soma-assets "$UMR_SOMA_ASSETS_PATH"
+python scripts/visualize_robot_retarget_result.py \
+  --result output/piplus22/boxing/motion.npz --play
+```
+
+`motion.npz` 保存机器人轨迹，`audit/` 保存映射和源分区标签审计。**需使用上述局部分界 retarget.py**；
+直接调用官方 pipeline 的 retarget 阶段不会启用本分支的绑定适配。
+
+处理其他 uniform 动作时，用 configure 指定新的 BVH 和独立 `--out`，然后复用同一 `prepared`，
+为每个动作指定独立 `--audit-dir`。相同模型与模板的对应关系只需训练和准备一次。
+不支持直接将这套标定套到任意 BVH、SOMA proportional 或其他 PiPlus 变体。
+
+已验证自带资产可在独立目录加载，模型参数及网格与原生产资产一致；自带模型的短动作重定向检查
+见[详细中文说明](docs/local_region_umr_zh.md)。
 
 ## Quick Start
 

@@ -1,6 +1,6 @@
 # PiPlus 40V 0908：UMR 局部分界重定向
 
-本分支提取了 BONES-SEED 批处理实际使用的局部分界适配器，基于官方 UMR
+本分支包含 PiPlus 40V 0908 的完整 22DOF 机器人资产，以及 BONES-SEED 批处理实际使用的局部分界适配器，基于官方 UMR
 `d1cdaedaf67a827198da71c5fa831f48b2e51f91`。为保持已验证行为，分支直接从该提交建立，
 未混入工作区中其他实验修改。没有修改上游求解器文件。
 
@@ -32,17 +32,18 @@
 
 ## 文件与外部输入
 
-- `scripts/local_regions/configure.py`：从外部资产生成当前机器的配置。
+- `scripts/local_regions/configure.py`：默认使用自带 22DOF 机器人，结合外部人体资产生成配置。
 - `capture.py`：捕获原始对应关系和分区标签，不求解运动轨迹。
 - `prepare.py` / `clipped_surface.py`：生成受限对应关系。
 - `retarget.py`：调用原始 UMR 求解器，注入局部分界绑定与源标签稳定处理。
 - `robot_configs/local_regions/`：分区边界和生产参数模板。
 
 依赖沿用根目录安装说明；需要可用的 MuJoCo、trimesh proximity 依赖、SOMA、人体模型及 CUDA
-环境。本次未修改依赖版本。分支不新增 BONES-SEED 原始数据、SMPL/SOMA 人体资产、机器人网格、
-训练权重、派生点云 NPZ 或动作结果。请自行取得相应许可，并提供：
+环境。本次未修改依赖版本。机器人 MJCF 和全部 27 个网格已包含在 `assets/piplus_40v_0908/`，配置脚本默认使用它。
+分支不新增 BONES-SEED 原始数据、SMPL/SOMA 人体资产、训练权重、派生点云 NPZ 或动作结果。
+外部输入与自带资产分别为：
 
-- 匹配的 PiPlus 40V 260908 MJCF 与其 mesh 目录，visual geom 在 group 1；
+- 自带 PiPlus 40V 260908 22DOF MJCF 与相对路径 mesh 目录，visual geom 在 group 1；
 - SOMA uniform BVH、`soma_assets`、对应的 SOMA USD 骨架；
 - 已授权的人体模型目录；
 - 可选：当前生产版本训练完成的 `correspondence_slots_final.npz` 与配套 `mapping.npz/json`。
@@ -60,7 +61,6 @@ export UMR_SOMA_ASSETS_PATH=/path/to/soma_assets
 export UMR_SOMA_SMPLX_ASSETS_PATH="$UMR_SOMA_ASSETS_PATH"
 
 python scripts/local_regions/configure.py \
-  --robot-xml /path/to/piplus_40v_260908_no_hyperextension.xml \
   --bvh /path/to/motions_uniform/bvh/example.bvh \
   --soma-assets "$UMR_SOMA_ASSETS_PATH" \
   --soma-usd /path/to/shapes/soma_base_rig/soma_base_skel_minimal.usd \
@@ -68,6 +68,7 @@ python scripts/local_regions/configure.py \
   --out output/local_regions/example
 ```
 
+`--robot-xml` 默认为仓库自带的 22DOF MJCF；可显式覆盖，但其他变体需重新标定。
 `--max-frames 12` 可用于首次试跑；默认 0 表示整段。输出为 `config.json`，动作结果路径为同目录
 `motion.npz`。已有 config 不会覆盖。浮动基座 XML 由上游自动生成，资产引用应保持有效。
 
@@ -142,3 +143,18 @@ python -m unittest discover -s tests -p test_local_region_surface.py
 
 适配器读取上游绑定函数调用者的局部变量，所以依赖此固定 UMR 版本。升级上游后必须重新检查接口、
 捕获映射并做回归验证。上述短动作检查仅证明提取后的方法可执行，不代表所有高动态动作均已通过质量检查。
+
+## 自带 22DOF 资产回归检查
+
+已将生产 MJCF 和全部 27 个 STL 网格纳入分支，打包将 `compiler.meshdir` 改为相对路径并统一 XML 空白，模型参数保持不变。
+在独立临时目录加载成功：22 个标量关节，加浮动基座后 `nq=29`、`nv=28`。
+网格 SHA-256、编译后的质量/惯量、关节轴与限位、几何变换、网格顶点和面均与原生产资产一致。
+
+默认配置加载自带模型，运行相同 reach_jump 动作前 12 帧，输出有限的 `(12, 29)` 轨迹，
+双膝均在非负限位内，2411 个受限点绑定误差 `4.051e-9` 米。与此前短跑结果的最大 qpos 差异
+为 `1.17e-5`；模型参数一致，重复计算存在小量数值差异。未在此次资产补齐中重新训练 500 epochs。
+
+```bash
+python -m unittest discover -s tests -p test_piplus_22dof_asset.py
+python -m unittest discover -s tests -p test_local_region_surface.py
+```

@@ -1,4 +1,4 @@
-"""Generate a portable local config from user-supplied licensed assets."""
+"""Generate a local config for bundled PiPlus 22-DOF and external human assets."""
 
 from pathlib import Path
 import argparse
@@ -6,7 +6,13 @@ import json
 
 ROOT = Path(__file__).resolve().parents[2]
 p = argparse.ArgumentParser(description=__doc__)
-for name in ["robot-xml", "bvh", "soma-assets", "soma-usd", "smpl-models", "out"]:
+p.add_argument(
+    "--robot-xml",
+    type=Path,
+    default=ROOT / "assets/piplus_40v_0908/piplus_40v_260908_no_hyperextension.xml",
+    help="Defaults to the bundled PiPlus 40V 0908 22-DOF model.",
+)
+for name in ["bvh", "soma-assets", "soma-usd", "smpl-models", "out"]:
     p.add_argument("--" + name, type=Path, required=True)
 p.add_argument("--max-frames", type=int, default=0)
 a = p.parse_args()
