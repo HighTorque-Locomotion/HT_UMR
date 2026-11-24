@@ -433,3 +433,7 @@ If you find UMR useful in your research, please cite the paper:
   url={https://arxiv.org/abs/2609.02134},
 }
 ```
+
+### PiPlus 22DOF 踝部交替抖动修复
+
+PiPlus 0908 配置默认使用官方的 `surface_slots_all` 地面硬约束，从全部表面采样点中选取近地点共同加入 QP，避免脚掌单个最近点切换引发交替修正。保留局部分区、自碰撞、膝盖限位和原有平滑权重，无需重新训练对应。复用旧配置时需显式修改 `solver.ground_penetration_hard_constraint_mode`；旧数据不会自动重算。6 mm 余量针对采样表面点，不等同于碰撞几何的完整离地距离。详见[原因、同模型消融和使用说明](docs/piplus_ground_contact_jitter_zh.md)。

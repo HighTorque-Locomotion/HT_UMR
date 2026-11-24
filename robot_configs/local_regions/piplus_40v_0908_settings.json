@@ -123,7 +123,7 @@
     },
     "smooth_cost": 4.0,
     "temporal_smooth_cost": 8.0,
-    "ground_penetration_hard_constraint_mode": "mujoco_collision",
+    "ground_penetration_hard_constraint_mode": "surface_slots_all",
     "ground_penetration_margin": 0.006
   }
 }

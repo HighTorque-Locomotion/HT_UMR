@@ -1,0 +1,114 @@
+# PiPlus 22DOF 踝部交替抖动：地面接触约束修复
+
+## 结论和适用范围
+
+2026-11-24 对 `feat/piplus-local-region-umr`（661ed8f）和官方 UMR（d1cdaed）比较发现：核心求解器和 LQR 实现一致。我们的配置启用了 `mujoco_collision` 地面硬约束；官方 BONES-SEED 默认使用 `surface_slots_all`。单最近点碰撞约束是本批异常交替踝部运动的主要原因；局部分区并不是该问题的必要条件。
+
+最终默认修复是把 `robot_configs/local_regions/piplus_40v_0908_settings.json` 中的地面模式切回官方已有的 `surface_slots_all`。这会把全部机器人表面采样点作为候选，按既有参数选取离地低于 margin + 0.05 m 的点，最多保留最低的128个点同时约束高度，不依赖每个碰撞几何对的单个最近点。`all` 指候选范围，不能理解为4096个点每帧全部进入 QP。局部分区、22DOF 资产、地面余量数值 6 mm、自碰撞、膝盖防反屈、迭代次数及 LQR 参数均保留。
+
+**6 mm 的测量对象随模式改变**：现在是采样表面点，原先是碰撞代理几何；两者不完全重合，不能将设置值解释为完整碰撞几何始终离地 6 mm。最终轨迹另用碰撞几何独立检查。
+
+这解决的是已验证的接触线性化缺陷，不保证所有运动完全无抖动，也不保证 LQR 后的整条轨迹严格无穿地。高速运动的非线性约束误差和后处理残余仍应检查；不要直接据此替换已发布数据。
+
+## 版本差异
+
+来源：[我们的远程分支](https://github.com/HighTorque-Locomotion/HT_UMR/tree/feat/piplus-local-region-umr)；[官方默认配置](https://github.com/hanyang9/UMR/blob/d1cdaedaf67a827198da71c5fa831f48b2e51f91/humanoid_retarget_defaults.json)。下表描述修复前差异。
+
+`git diff d1cdaed..661ed8f -- scripts` 只有新增的 `scripts/local_regions/` 五个文件；没有修改核心 QP/LQR 代码。
+
+| 项目 | 官方 PiPlusPro / BONES 默认 | 我们的 PiPlus 0908 |
+|---|---|---|
+| 机器人 | PiPlusPro，含腰/腕/夹爪 | 22DOF 40V 0908 |
+| 表面对应 | 4096 点学习对应 | 4096 点 + 局部分区重投影与冻结标签 |
+| 地面硬约束 | surface_slots_all | mujoco_collision |
+| 地面余量 | 0 m | 0.006 m |
+| 自穿透硬约束 | 关闭 | 开启、无 slack |
+| 每帧 / 首帧迭代 | 1 / 15 | 3 / 60 |
+| smooth / temporal_smooth | 1 / 0.5 | 4 / 8 |
+| 肩部逐关节 box 步长 | 未指定 | 六个肩/上臂关节 0.03 rad |
+| LQR data / velocity / acceleration / jerk | 1 / 0 / 0.1 / 0.01 | 相同 |
+
+两边 global step 模式均为 L2，`global_step_size=0.4`；`max_dq=0.15` 不是该模式下所有关节的逐帧速度上限。
+
+## 如何形成抖动
+
+旧函数通过 `mj_collision` 发现候选几何对，再将每个脚掌碰撞几何与地面的多个接触点压成一对 `mj_geomDistance` 最近点。QP 只约束这个点，可能让脚掌另一侧穿过地面；下一次迭代或下一帧最近点换边，再反向转动。大平脚使这种局部线性化不完整更明显，但并非机器人资产不能用于 UMR。
+
+在同一22DOF机器人、同一坐姿片段中，未经 LQR 的左踝俯仰角在约36°与51°间逐帧交替，脚掌最近点在前后缘切换。120 Hz 数据上的逐帧交替约为60 Hz。旧结果脚底可低于地面约5–13 mm，即使配置余量为+6 mm。
+
+作为独立实验，也尝试改进碰撞模式：将每个平面接触的法向距离和机器人端点 Jacobian 都加入 QP：`normal @ J_point`。MuJoCo 的 `contact.pos` 是两几何见证点的中点，`contact.frame[:3]` 指向 geom1→geom2，因此按几何顺序调整法向，并用 `pos + 0.5 * dist * normal` 恢复机器人端点。分离和穿入两种状态都用有限差分验证。
+
+实验补丁保留盒子8个角点及胶囊两端，平面支撑组不受 `max_pairs` 截断，模型接触 margin 在成功或异常退出时恢复。7项几何与 Jacobian 单元测试通过，但动态效果未达到最终方案。因此**实验补丁不合入本分支**，保存于实验目录 `experimental_ground_manifold/`。最终分支只改 PiPlus 的地面约束选择，没有额外滤波或放松自碰撞。
+
+MuJoCo 定义：[mjContact](https://mujoco.readthedocs.io/en/stable/APIreference/APItypes.html#mjcontact)。
+
+## 同模型对照实验
+
+输入 `sitting_legs_bend_arms_front_loop_003__A031` 前480帧（4秒），保留完整的第一帧初始化。每次独立运行，除该行说明的因素外，其余参数一致。指标为左右踝世界坐标二阶差分范数除4，换算毫米后取P95，排除首60和末12个差分样本。它对逐帧交替振幅敏感，但不是一般意义的全部跟踪误差。
+
+| 条件 | LQR 后指标 mm |
+|---|---:|
+| 原始方法重现 | 4.649657 |
+| 只取消局部分区，回到原始学习对应 | 5.724624 |
+| 只改官方平滑权重 | 3.842773 |
+| 只改每帧1次迭代 | 4.651545 |
+| 只关闭自穿透硬约束 | 3.827495 |
+| 只把地面余量改0 | 4.113267 |
+| 只换官方 surface_slots_all 地面模式 | 0.004789 |
+| 实验方案：多点平面接触，保留原配置 | 0.004792 |
+
+原始求解未滤波指标约6.982740 mm；表面点模式约0.008218 mm，多接触点实验约0.008203 mm，证明改善发生在求解阶段。最近点查询本身仍可能在几乎等高的脚掌边缘切换，但补丁不再只依赖单个最近点，踝部无需跟随切换。
+
+### 动态动作决定最终方案
+
+完整踢腿片段 `injured_R_leg_kick_trash_002__A070` 中，多接触点方案仍有明显抖动。使用同样的统计口径，表面点模式为0.219754 mm，多接触点+表面点混合方案为1.349908 mm；只增加碰撞盒全部角点或胶囊两端仍在约3.8 mm附近。减少迭代或关闭自碰撞也没有解决。因此最终默认采用 **surface_slots_all**，不能把静态坐姿的成功推广为多接触点已经解决所有动态片段。多接触点方案仅作为实验保留。
+
+另对之前的10条完整动作（20,727帧）重跑，在独立目录保留原结果、新结果、原始人体、逐帧慢放和穿地/自穿透检查。实验路径：`/home/sunteng/Projects/Data/bones_seed/umr_jitter_fix_20261124/`；最终各条指标见该目录 `README.md`、`validation.json`。这些实验产物没有放入仓库或正式数据集。
+
+## 完整动作结果
+
+10/10 条均成功，共20,727帧。使用完整动作口径（排除首尾各12个差分样本）时，每条指标均降低，降幅中位数 **97.59%**：
+
+|动作|原有 mm|修复 mm|
+|---|---:|---:|
+|跛行|4.1571|0.2447|
+|受伤踢腿|3.8762|0.2155|
+|电锯待机|3.1750|0.0920|
+|嘻哈舞蹈|3.9470|0.3056|
+|抱箱移动|3.1598|0.1843|
+|拄拐起身|8.0711|0.1546|
+|拉伸|3.6886|0.0662|
+|俯身伸手|18.0757|0.0645|
+|坐姿|3.9046|0.0070|
+|舞蹈组合|3.8426|0.0715|
+
+碰撞几何穿地超过10mm的帧由1678帧降为1帧；残余最大穿地10.56mm发生于拄拐起身。修复后最大自穿透4.12mm（按模型接触过滤规则）；关节限位违反小于1e-6 rad浮点容差。各条平均手臂/腿段方向偏差相对旧结果的绝对变化分别不超过0.33°/1.05°。这些是运动学和几何检查，不证明策略执行稳定。
+
+## 使用与测试
+
+使用本修复 checkout 中的 `scripts/local_regions/retarget.py`，原来的 prepared 对应资产和 motion config 可直接复用，不需要重新采4096点或训练对应。新输出与 audit-dir 请用新路径；旧输出不会自动重算。`configure.py` 新生成的配置自动使用新默认值；**复用旧 config 时必须显式修改**：
+
+```json
+{
+  "solver": {
+    "ground_penetration_hard_constraint_mode": "surface_slots_all",
+    "ground_penetration_margin": 0.006
+  }
+}
+```
+
+以上只是需要合入原配置的两个字段，不能用它替换整份配置。
+
+```bash
+OMP_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2 python scripts/local_regions/retarget.py \
+  --config /path/to/new-output-config.json \
+  --prepared /path/to/prepared-regions \
+  --audit-dir /path/to/new-audit-directory \
+  --soma-assets /path/to/soma_assets
+
+python -m unittest discover -s tests -v
+```
+
+本分支没有修改核心求解器。若旧的外部 worker 写死了 `UP=.../official_4096_20261028/upstream` 并继续读旧配置，它不会自动读取本分支的设置；必须把实际输入配置改为 `surface_slots_all`。本次验证运行的是此 checkout 的适配器，并显式传入新配置。
+
+本分支运行原有资产与局部分区测试；完整10条动作作为行为验证。单独的多接触点实验另外通过7项几何单元测试（完整支撑组、分离/穿入 Jacobian 有限差分、非平面回退、异常恢复等），但仍因动态效果不足未被采纳。
